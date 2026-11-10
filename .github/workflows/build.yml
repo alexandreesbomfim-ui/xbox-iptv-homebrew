@@ -1,0 +1,30 @@
+name: Compilar Homebrew Xbox 360
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Baixar código-fonte do repositório
+      uses: actions/checkout@v4
+
+    - name: Instalar ferramentas de compilação (CMake)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Executar CMake apontando para a raiz do projeto
+      run: |
+        cmake -S . -B build
+        cmake --build build
+
+    - name: Salvar artefatos gerados
+      uses: actions/upload-artifact@v4
+      with:
+        name: xbox-homebrew-output
+        path: build/
